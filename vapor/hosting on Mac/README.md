@@ -78,6 +78,15 @@ We'll use Homebrew to install nginx. In Terminal, type:
 Let's launch it:
 
     sudo nginx
-    
+
 Check that this link opens: http://localhost:8080
+
+### Configure nginx
+
+The configuration file is located here: /usr/local/etc/nginx/nginx.conf
+
+I use TextEdit to edit these type of files, but you can use your favorite text editor, of course. In Terminal do:
+
+    /usr/local/etc/nginx/nginx.conf
+
 
