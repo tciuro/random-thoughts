@@ -6,7 +6,7 @@ This article outlines the steps needed to host a Vapor 3 application on Mac OS X
 
 - Mac OS X Catalina (10.15)
 - Vapor 3
-- Domain's DNS already setup
+- The domain's DNS has already been setup (e.g. `yourdomain.com`)
  
 ## Agenda
 
@@ -29,11 +29,13 @@ Make sure you have the latest public version of Xcode installed (version 11.4 at
 
     $ sudo xcode-select -s /Applications/Xcode.app/Contents/Developer
     
-This assures that Xcode's toolchain will be used from now on.
+This ensures that the Xcode toolchain will be used from now on.
 
 ### Install Homebrew
 
-Just head to https://brew.sh and install it on the Mac.
+Install Homebrew on your Mac:
+
+    $ /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
 
 ### Install Vapor 3
 
@@ -92,7 +94,7 @@ To stop nginx:
 
 ### Configure nginx
 
-The nginx configuration file is located here: /usr/local/etc/nginx/nginx.conf
+The nginx configuration file is located here: `/usr/local/etc/nginx/nginx.conf`
 
 The default nginx config file has a bunch of commented out options. If you want to start small and grow from there as your needs require it, you may want to check [this template](https://github.com/tciuro/random-thoughts/blob/master/vapor/hosting%20on%20Mac/nginx.conf).
 
@@ -100,10 +102,10 @@ If you decide to go with the template, there are a few things to note:
 
 - nginx listens on port 80
 - you should replace `yourdomain.com` and `yourdomain_com` with your own domain.
-- the template already contains the references to the letsencrypt files. Make sure you replace `yourdomain.com` with your own.
-- the SSL cyphers are pretty decent. During verification, it obtained an A+.
-- the location /api section redirects all requests with https://yourdomain.com/api* to your Vapor app, running on http://localhost:8080. 
-- finally, the location / section are handled by nginx itself, serving requests/files from /Users/you/www/yourdomain_com. Change `you` and `yourdomain_com` according to your specifications/requirements/preference.
+- the template already contains the paths to the Let's Encrypt files. Make sure you replace `yourdomain.com` on each path with your own domain.
+- the SSL cyphers are pretty decent.
+- the location /api section redirects all requests with https://yourdomain.com/api* to your Vapor app, which typically runs on http://localhost:8080. 
+- finally, the location / section are handled by nginx itself, serving requests/files from `/Users/you/www/yourdomain_com`. Change `you` and `yourdomain_com` according to your specifications/requirements/preference.
 
 ### Install Let's Encrypt certbot
 
@@ -121,17 +123,17 @@ Once nginx has been installed and its config file set up, let's do some sanity c
 - stop nginx, if it's running: `$ sudo nginx -s stop`
 - run your Vapor app (from Xcode or `$ vapor run`)
 - open a browser window and check that your app responds (e.g. http://localhost:8080/hello). If it does, awesome. Your Vapor app is ready to go.
-- put some boilerplate html file in /Users/you/www/yourdomain_com
+- put some boilerplate html file in `/Users/you/www/yourdomain_com`.
 - launch nginx: `$ sudo nginx`
 - open a browser window and check that nginx serves the boilerplate file when hitting https://yourdomain.com.
-- final check: verify that your Vapor app receives the request, only this time we'll issue the request which will go through nginx and then redirected to http://localhost:8080 (e.g. https://yourdomain.com/hello).
+- final check: verify that your Vapor app receives the request, only this time we'll issue the request which will go through nginx and then redirected to http://localhost:8080 (e.g. check that this works: https://yourdomain.com/hello).
 
 ### Let's Encrypt: Choose how to set up automatic renewal
 
-The official instructions set up automatic renewal via crontab. There's also the option to use Launch Services, which I personally prefer. These are the options:
+The official instructions set up automatic renewal via `crontab`. There's also the option to use `Launch Services`, which I personally prefer. These are the options:
 
-- crontab [the official certbot instructions](https://certbot.eff.org/lets-encrypt/osx-other.html).
-- Launch Services (see section **abc** below).
+- `crontab` [the official certbot instructions](https://certbot.eff.org/lets-encrypt/osx-other.html). Make sure you select `nginx` from the `My HTTP website is running` popup.
+- `Launch Services` (see section *Set up automatic renewal via Launch Services* below).
 
 ### Set up automatic renewal via Launch Services
 
@@ -147,7 +149,7 @@ Copy the [the nginx keepalive plist](https://github.com/tciuro/random-thoughts/b
     
 ### Set up automatic the Vapor app relaunch
 
-Copy the [the run Vapor app script](https://github.com/tciuro/random-thoughts/blob/master/vapor/hosting%20on%20Mac/launch_vapor.sh) to some location (e.g. /Users/you/scripts/).
+Copy the [the run Vapor app script](https://github.com/tciuro/random-thoughts/blob/master/vapor/hosting%20on%20Mac/launch_vapor.sh) to some location (e.g. `/Users/you/scripts/`).
 
 Check the contents of [the Vapor app relaunch plist](https://github.com/tciuro/random-thoughts/blob/master/vapor/hosting%20on%20Mac/local.vapor.keepalive.plist) and set the script location chosen in the previous step. Next, copy the Vapor app relaunch plist to `/Library/LaunchDaemons` and load it:
 
@@ -157,7 +159,7 @@ Check the contents of [the Vapor app relaunch plist](https://github.com/tciuro/r
 
 Reboot the Mac. If everything is OK, we should have nginx running. 
 
-Now that everything is running, let's double check that the connection is in tip-top condition. Head over to [Qualys SSL Labs](https://www.ssllabs.com/ssltest/) and enter your domain (e.g. yourdomain.com) and wait for the report. Hopefully it'll come back with an excellent report card.
+Now that everything is running, let's double check that the connection is in tip-top condition. Head over to [Qualys SSL Labs](https://www.ssllabs.com/ssltest/) and enter your domain (e.g. `yourdomain.com`) and wait for the report. Hopefully it'll come back with an excellent report card.
 
 ### Some parting thoughts...
 
