@@ -128,6 +128,24 @@ Once nginx has been installed and its config file set up, let's do some sanity c
 - open a browser window and check that nginx serves the boilerplate file when hitting https://yourdomain.com.
 - final check: verify that your Vapor app receives the request, only this time we'll issue the request which will go through nginx and then redirected to http://localhost:8080 (e.g. check that this works: https://yourdomain.com/hello).
 
+⚠️ **Important!** ⚠️
+
+Two things:
+
+1. Full Disk Access
+
+    Beginning with Mojave, I believe, the security measures have tighten up the grip.
+    In general, scripts will not be allowed to run unless they're given proper
+    authorization. So far, the only way I've found to do that is to add `bash` (or
+    your shell of choice) to `System Preferences > Security & Privacy > Full Disk Access`.
+    If there's a safer way to do this, please let me know! 🙏🏻
+
+2. FileVault
+
+	I found out that activating FileVault on the server... is a bad idea™. The reason
+	is that launch daemons will only start *after* the volume has been unlocked. So, if
+	you want this to work, turn off FileVault and put a Doberman in front of your Mac.
+
 ### Let's Encrypt: Choose how to set up automatic renewal
 
 The official instructions set up automatic renewal via `crontab`. There's also the option to use `Launch Services`, which I personally prefer. These are the options:
